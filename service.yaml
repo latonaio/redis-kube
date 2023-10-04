@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-kube
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-kube
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-kube
+spec:
+  selector:
+    matchLabels:
+      app: redis-kube
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis-kube
+    spec:
+      nodeName: worker
+      hostname: redis-kube
+      containers:
+        - image: redis:6.0-rc-alpine3.11
+          name: redis-kube
+          ports:
+            - containerPort: 6379
+              name: redis
+
